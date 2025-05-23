@@ -45,7 +45,7 @@ php artisan app:init-database-production
 
 4. アプリケーションにアクセス：
 
-- フロントエンド: http://localhost:3000
+- フロントエンド: http://localhost:3030
 - バックエンドAPI: http://localhost:8000/api
 
 ## 課題内容
