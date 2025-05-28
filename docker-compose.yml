@@ -45,10 +45,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: internship-challenge-frontend
-    restart: unless-stopped
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend:/app:cached
     ports:
       - "3030:3030"
     depends_on:
@@ -57,7 +55,8 @@ services:
       - internship-challenge-network
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000/api
-    command: npm run dev
+    tty: true
+    # command: npm run dev
 
 networks:
   internship-challenge-network:
