@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "title": "Internship Challenge - User Management App",
+    "description": "Web application with CRUD functionality for user data"
+  },
+  "navigation": {
+    "home": "Home",
+    "userList": "User List",
+    "addUser": "Add User",
+    "importCsv": "Import CSV",
+    "exportCsv": "Export CSV"
+  },
+  "home": {
+    "title": "Internship Challenge - User Management App",
+    "description": "This application is a web application with CRUD functionality for user data. It provides the following features:",
+    "features": {
+      "userList": "User list display (with pagination)",
+      "userDetail": "User detail display",
+      "addUser": "Add user",
+      "editUser": "Edit user",
+      "deleteUser": "Delete user",
+      "importCsv": "CSV import",
+      "exportCsv": "CSV export"
+    },
+    "challenge": "This application has some issues and areas for improvement. Finding and fixing them is the challenge.",
+    "cards": {
+      "userList": {
+        "title": "User List",
+        "description": "Displays a list of registered users."
+      },
+      "addUser": {
+        "title": "Add User",
+        "description": "Add a new user."
+      },
+      "importCsv": {
+        "title": "Import CSV",
+        "description": "Import user data from a CSV file."
+      },
+      "exportCsv": {
+        "title": "Export CSV",
+        "description": "Export user data to a CSV file."
+      }
+    }
+  },
+  "users": {
+    "list": {
+      "title": "User List",
+      "addUser": "Add New User",
+      "loading": "Loading...",
+      "noUsers": "No users found",
+      "table": {
+        "id": "ID",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Membership Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "detail": "Detail",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "errors": {
+        "fetch": "Failed to fetch user data."
+      },
+      "pagination": {
+        "label": "Pagination",
+        "first": "First Page",
+        "previous": "Previous Page",
+        "next": "Next Page",
+        "last": "Last Page",
+        "info": "Showing {start}-{end} of {total} users"
+      }
+    },
+    "add": {
+      "title": "Add User",
+      "backToList": "Back to List",
+      "submit": {
+        "label": "Add",
+        "loading": "Adding..."
+      },
+      "form": {
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter name",
+          "required": "Name is required"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "example@example.com"
+        },
+        "phone": {
+          "label": "Phone",
+          "placeholder": "123-456-7890"
+        },
+        "address": {
+          "label": "Address",
+          "placeholder": "Enter address"
+        },
+        "birthDate": {
+          "label": "Birth Date",
+          "placeholder": "YYYY-MM-DD"
+        },
+        "gender": {
+          "label": "Gender",
+          "placeholder": "Select gender",
+          "options": {
+            "male": "Male",
+            "female": "Female",
+            "other": "Other"
+          }
+        },
+        "membershipStatus": {
+          "label": "Membership Status",
+          "placeholder": "Select membership status",
+          "options": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "pending": "Pending",
+            "expired": "Expired"
+          }
+        },
+        "notes": {
+          "label": "Notes",
+          "placeholder": "Enter notes"
+        },
+        "points": {
+          "label": "Points",
+          "placeholder": "0"
+        },
+        "required": "Required",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "validation": "There are validation errors.",
+        "general": "Failed to add user."
+      },
+      "success": "User added successfully."
+    },
+    "import": {
+      "title": "Import CSV",
+      "description": "Import user data from a CSV file.",
+      "note": "※ The first row of the CSV file will be treated as a header row.",
+      "form": {
+        "file": "CSV File",
+        "filePlaceholder": "Select a CSV file",
+        "submit": "Import",
+        "loading": "Importing..."
+      },
+      "errors": {
+        "noFile": "Please select a file.",
+        "notCsv": "Please select a CSV file.",
+        "unknown": "An unknown error occurred."
+      },
+      "success": "Import completed successfully.",
+      "format": {
+        "title": "CSV File Format",
+        "description": "Must match the format output by the CSV export function.",
+        "table": {
+          "column": "Column",
+          "description": "Description",
+          "required": "Required"
+        },
+        "columns": {
+          "id": {
+            "name": "ID",
+            "description": "User ID (for updates only)",
+            "required": "No"
+          },
+          "name": {
+            "name": "Name",
+            "description": "Name",
+            "required": "Yes"
+          },
+          "email": {
+            "name": "Email",
+            "description": "Email address",
+            "required": "Yes"
+          },
+          "phone": {
+            "name": "Phone",
+            "description": "Phone number",
+            "required": "No"
+          },
+          "address": {
+            "name": "Address",
+            "description": "Address",
+            "required": "No"
+          },
+          "birthdate": {
+            "name": "Birth Date",
+            "description": "Birth date (YYYY-MM-DD format)",
+            "required": "No"
+          },
+          "gender": {
+            "name": "Gender",
+            "description": "Gender (male/female/other)",
+            "required": "No"
+          },
+          "membership": {
+            "name": "Membership Status",
+            "description": "Membership status (active/inactive/pending/expired)",
+            "required": "No"
+          },
+          "memo": {
+            "name": "Memo",
+            "description": "Memo",
+            "required": "No"
+          },
+          "profileImage": {
+            "name": "Profile Image",
+            "description": "Profile image",
+            "required": "No"
+          },
+          "points": {
+            "name": "Points",
+            "description": "Points (numeric)",
+            "required": "No"
+          }
+        }
+      },
+      "back": "Back to List"
+    },
+    "export": {
+      "title": "Export CSV",
+      "description": "Export user data to a CSV file.",
+      "note": "※ All user data will be exported.",
+      "button": {
+        "export": "Export",
+        "loading": "Exporting..."
+      },
+      "errors": {
+        "export": "Export failed."
+      },
+      "success": "Export completed. Download will begin automatically.",
+      "info": {
+        "title": "About CSV Export",
+        "description": "Exports user data as a CSV file. The export process may take some time."
+      },
+      "back": "Back to List"
+    }
+  },
+  "footer": {
+    "text": "Internship Challenge - User Management App"
+  }
+}

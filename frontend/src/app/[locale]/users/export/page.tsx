@@ -3,8 +3,13 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { exportUsers } from '@/lib/api/users'
+import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 
 export default function ExportUsersPage() {
+	const params = useParams()
+	const locale = params.locale as string
+	const t = useTranslations('users.export')
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const [success, setSuccess] = useState<string | null>(null)
@@ -16,10 +21,10 @@ export default function ExportUsersPage() {
 			setSuccess(null)
 
 			await exportUsers()
-			setSuccess('エクスポートが完了しました。ダウンロードが開始されます。')
+			setSuccess(t('success'))
 		} catch (err: unknown) {
 			console.error('Error exporting users:', err)
-			setError('エクスポートに失敗しました。')
+			setError(t('errors.export'))
 		} finally {
 			setLoading(false)
 		}
@@ -28,22 +33,22 @@ export default function ExportUsersPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex justify-between items-center">
-				<h1 className="text-2xl font-bold">CSVエクスポート</h1>
+				<h1 className="text-2xl font-bold">{t('title')}</h1>
 				<Link
-					href="/users/list"
+					href={`/${locale}/users/list`}
 					className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
 				>
-					一覧に戻る
+					{t('back')}
 				</Link>
 			</div>
 
 			<div className="bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
 				<div className="mb-6">
 					<p className="text-gray-700 dark:text-gray-200">
-						ユーザーデータをCSVファイルにエクスポートします。
+						{t('description')}
 					</p>
 					<p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
-						※ 全てのユーザーデータがエクスポートされます。
+						{t('note')}
 					</p>
 				</div>
 
@@ -66,17 +71,17 @@ export default function ExportUsersPage() {
 						disabled={loading}
 						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 					>
-						{loading ? 'エクスポート中...' : 'エクスポートする'}
+						{loading ? t('button.loading') : t('button.export')}
 					</button>
 				</div>
 			</div>
 
 			<div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
 				<h2 className="text-xl font-bold text-gray-600 mb-4">
-					CSVエクスポートについて
+					{t('info.title')}
 				</h2>
 				<p className="text-gray-700">
-					ユーザーデータをCSVファイルとしてエクスポートします。エクスポートには時間がかかる場合があります。
+					{t('info.description')}
 				</p>
 			</div>
 		</div>

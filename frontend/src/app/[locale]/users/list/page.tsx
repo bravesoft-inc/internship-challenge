@@ -4,8 +4,14 @@ import { fetchUsers } from '@/lib/api/users'
 import type { User } from '@/lib/api/users'
 import Link from 'next/link'
 import { Fragment, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 
 export default function UserListPage() {
+	const t = useTranslations('users.list')
+	const params = useParams()
+	const locale = params.locale as string
+
 	const [users, setUsers] = useState<User[]>([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
@@ -22,7 +28,7 @@ export default function UserListPage() {
 				setUsers(data.users || [])
 				setError(null)
 			} catch (err) {
-				setError('ユーザーデータの取得に失敗しました。')
+				setError(t('errors.fetch'))
 				console.error(err)
 			} finally {
 				setLoading(false)
@@ -46,7 +52,7 @@ export default function UserListPage() {
 	}
 
 	if (loading) {
-		return <div className="text-center py-10">読み込み中...</div>
+		return <div className="text-center py-10">{t('loading')}</div>
 	}
 
 	if (error) {
@@ -56,12 +62,12 @@ export default function UserListPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex justify-between items-center">
-				<h1 className="text-2xl font-bold">ユーザー一覧</h1>
+				<h1 className="text-2xl font-bold">{t('title')}</h1>
 				<Link
-					href="/users/add"
+					href={`/${locale}/users/add`}
 					className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
 				>
-					新規ユーザー追加
+					{t('addUser')}
 				</Link>
 			</div>
 
@@ -70,22 +76,22 @@ export default function UserListPage() {
 					<thead className="bg-gray-100 dark:bg-gray-700">
 						<tr>
 							<th className="py-2 px-4 border-b dark:border-gray-600 text-left text-gray-700 dark:text-gray-200">
-								ID
+								{t('table.id')}
 							</th>
 							<th className="py-2 px-4 border-b dark:border-gray-600 text-left text-gray-700 dark:text-gray-200">
-								名前
+								{t('table.name')}
 							</th>
 							<th className="py-2 px-4 border-b dark:border-gray-600 text-left text-gray-700 dark:text-gray-200">
-								メールアドレス
+								{t('table.email')}
 							</th>
 							<th className="py-2 px-4 border-b dark:border-gray-600 text-left text-gray-700 dark:text-gray-200">
-								電話番号
+								{t('table.phone')}
 							</th>
 							<th className="py-2 px-4 border-b dark:border-gray-600 text-left text-gray-700 dark:text-gray-200">
-								会員状態
+								{t('table.status')}
 							</th>
 							<th className="py-2 px-4 border-b dark:border-gray-600 text-left text-gray-700 dark:text-gray-200">
-								操作
+								{t('table.actions')}
 							</th>
 						</tr>
 					</thead>
@@ -113,22 +119,22 @@ export default function UserListPage() {
 									</td>
 									<td className="py-2 px-4 border-b dark:border-gray-600 space-x-2">
 										<Link
-											href={`/users/detail/${user.id}`}
+											href={`/${locale}/users/detail/${user.id}`}
 											className="text-blue-500 hover:underline dark:text-blue-400"
 										>
-											詳細
+											{t('actions.detail')}
 										</Link>
 										<Link
-											href={`/users/edit/${user.id}`}
+											href={`/${locale}/users/edit/${user.id}`}
 											className="text-green-500 hover:underline dark:text-green-400"
 										>
-											編集
+											{t('actions.edit')}
 										</Link>
 										<Link
-											href={`/users/delete/${user.id}`}
+											href={`/${locale}/users/delete/${user.id}`}
 											className="text-red-500 hover:underline dark:text-red-400"
 										>
-											削除
+											{t('actions.delete')}
 										</Link>
 									</td>
 								</tr>
@@ -139,7 +145,7 @@ export default function UserListPage() {
 									colSpan={6}
 									className="py-4 text-center text-gray-700 dark:text-gray-200"
 								>
-									ユーザーが見つかりません
+									{t('noUsers')}
 								</td>
 							</tr>
 						)}
@@ -148,7 +154,7 @@ export default function UserListPage() {
 			</div>
 
 			<div className="flex justify-center mt-4">
-				<nav aria-label="ページネーション">
+				<nav aria-label={t('pagination.label')}>
 					<ul className="flex space-x-1">
 						{currentPage > 1 && (
 							<li>
@@ -156,7 +162,7 @@ export default function UserListPage() {
 									type="button"
 									onClick={() => handlePageChange(1)}
 									className="px-3 py-1 border dark:border-gray-600 bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-									aria-label="最初のページ"
+									aria-label={t('pagination.first')}
 								>
 									&laquo;
 								</button>
@@ -169,7 +175,7 @@ export default function UserListPage() {
 									type="button"
 									onClick={() => handlePageChange(currentPage - 1)}
 									className="px-3 py-1 border dark:border-gray-600 bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-									aria-label="前のページ"
+									aria-label={t('pagination.previous')}
 								>
 									&lsaquo;
 								</button>
@@ -203,10 +209,9 @@ export default function UserListPage() {
 												onClick={() => handlePageChange(page)}
 												className={`px-3 py-1 border dark:border-gray-600 ${
 													currentPage === page
-														? 'bg-blue-500 text-white'
+														? 'bg-blue-500 text-white dark:bg-blue-600'
 														: 'bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700'
 												}`}
-												aria-current={currentPage === page ? 'page' : undefined}
 											>
 												{page}
 											</button>
@@ -221,7 +226,7 @@ export default function UserListPage() {
 									type="button"
 									onClick={() => handlePageChange(currentPage + 1)}
 									className="px-3 py-1 border dark:border-gray-600 bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-									aria-label="次のページ"
+									aria-label={t('pagination.next')}
 								>
 									&rsaquo;
 								</button>
@@ -234,7 +239,7 @@ export default function UserListPage() {
 									type="button"
 									onClick={() => handlePageChange(totalPages)}
 									className="px-3 py-1 border dark:border-gray-600 bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-									aria-label="最後のページ"
+									aria-label={t('pagination.last')}
 								>
 									&raquo;
 								</button>
@@ -245,9 +250,11 @@ export default function UserListPage() {
 			</div>
 
 			<div className="text-sm text-gray-500 dark:text-gray-300 mt-4">
-				全{users.length}件中 {indexOfFirstItem + 1}-
-				{indexOfLastItem > users.length ? users.length : indexOfLastItem}
-				件を表示
+				{t('pagination.info', {
+					total: users.length,
+					start: indexOfFirstItem + 1,
+					end: indexOfLastItem > users.length ? users.length : indexOfLastItem,
+				})}
 			</div>
 		</div>
 	)

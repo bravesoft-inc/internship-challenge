@@ -1,14 +1,20 @@
 'use client'
 
-import type { AxiosError } from 'axios'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { type User, createUser } from '@/lib/api/users'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { type User, fetchUser, updateUser } from '@/lib/api/users'
+import { useTranslations } from 'next-intl'
 
-export default function AddUserPage() {
+export default function EditUserPage() {
+	const params = useParams()
 	const router = useRouter()
-	const [loading, setLoading] = useState(false)
+	const locale = params.locale as string
+	const userId = Number(params.id)
+	const t = useTranslations('users.edit')
+
+	const [loading, setLoading] = useState(true)
+	const [submitting, setSubmitting] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const [serverErrors, setServerErrors] = useState<Record<string, string[]>>({})
 
@@ -19,10 +25,42 @@ export default function AddUserPage() {
 		address: '',
 		birth_date: '',
 		gender: '',
-		membership_status: 'pending',
+		membership_status: '',
 		notes: '',
 		points: '0',
 	})
+
+	useEffect(() => {
+		const loadUser = async () => {
+			try {
+				setLoading(true)
+				const userData = await fetchUser(userId)
+
+				setFormData({
+					name: userData.name || '',
+					email: userData.email || '',
+					phone_number: userData.phone_number || '',
+					address: userData.address || '',
+					birth_date: userData.birth_date || '',
+					gender: userData.gender || '',
+					membership_status: userData.membership_status || '',
+					notes: userData.notes || '',
+					points: userData.points?.toString() || '0',
+				})
+
+				setError(null)
+			} catch (err) {
+				setError(t('errors.fetch'))
+				console.error(err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		if (userId) {
+			loadUser()
+		}
+	}, [userId, t])
 
 	const handleChange = (
 		e: React.ChangeEvent<
@@ -36,13 +74,8 @@ export default function AddUserPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
-		if (!formData.name) {
-			setError('名前は必須です。')
-			return
-		}
-
 		try {
-			setLoading(true)
+			setSubmitting(true)
 			setError(null)
 			setServerErrors({})
 
@@ -51,39 +84,42 @@ export default function AddUserPage() {
 				points: Number.parseInt(formData.points),
 			} as Partial<User>
 
-			await createUser(userData)
-			router.push('/users/list')
+			await updateUser(userId, userData)
+			router.push(`/${locale}/users/detail/${userId}`)
 		} catch (err: unknown) {
-			console.error('Error creating user:', err)
-
-			if (err && typeof err === 'object' && 'response' in err) {
-				const axiosError = err as AxiosError<{
-					errors: Record<string, string[]>
-				}>
-				if (axiosError.response?.data?.errors) {
-					setServerErrors(axiosError.response.data.errors)
-					setError('入力内容に問題があります。')
-				} else {
-					setError('ユーザー登録に失敗しました。')
-				}
+			console.error('Error updating user:', err)
+			if (err instanceof Error) {
+				setError(err.message)
 			} else {
-				setError('ユーザー登録に失敗しました。')
+				setError(t('errors.general'))
 			}
 		} finally {
-			setLoading(false)
+			setSubmitting(false)
 		}
+	}
+
+	if (loading) {
+		return <div className="text-center py-10">{t('loading')}</div>
 	}
 
 	return (
 		<div className="space-y-6">
 			<div className="flex justify-between items-center">
-				<h1 className="text-2xl font-bold">ユーザー追加</h1>
-				<Link
-					href="/users/list"
-					className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-				>
-					一覧に戻る
-				</Link>
+				<h1 className="text-2xl font-bold">{t('title')}</h1>
+				<div className="space-x-2">
+					<Link
+						href={`/${locale}/users/detail/${userId}`}
+						className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+					>
+						{t('backToDetail')}
+					</Link>
+					<Link
+						href={`/${locale}/users/list`}
+						className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+					>
+						{t('backToList')}
+					</Link>
+				</div>
 			</div>
 
 			{error && (
@@ -101,7 +137,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="name"
 					>
-						名前 <span className="text-red-500">*</span>
+						{t('form.name.label')} <span className="text-red-500">*</span>
 					</label>
 					<input
 						className={`shadow appearance-none border ${serverErrors.name ? 'border-red-500' : ''} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
@@ -123,7 +159,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="email"
 					>
-						メールアドレス <span className="text-red-500">*</span>
+						{t('form.email.label')} <span className="text-red-500">*</span>
 					</label>
 					<input
 						className={`shadow appearance-none border ${serverErrors.email ? 'border-red-500' : ''} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
@@ -145,7 +181,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="phone_number"
 					>
-						電話番号
+						{t('form.phone.label')}
 					</label>
 					<input
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -162,7 +198,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="address"
 					>
-						住所
+						{t('form.address.label')}
 					</label>
 					<input
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -179,15 +215,16 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="birth_date"
 					>
-						生年月日
+						{t('form.birthDate.label')}
 					</label>
 					<input
-						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline [&::-webkit-datetime-edit]:text-gray-700 [&::-webkit-datetime-edit-fields-wrapper]:text-gray-700 [&::-webkit-datetime-edit-text]:text-gray-700 [&::-webkit-datetime-edit-month-field]:text-gray-700 [&::-webkit-datetime-edit-day-field]:text-gray-700 [&::-webkit-datetime-edit-year-field]:text-gray-700 [&::-webkit-datetime-edit]:placeholder-shown:text-transparent"
 						id="birth_date"
 						type="date"
 						name="birth_date"
 						value={formData.birth_date}
 						onChange={handleChange}
+						lang={locale}
 					/>
 				</div>
 
@@ -196,7 +233,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="gender"
 					>
-						性別
+						{t('form.gender.label')}
 					</label>
 					<select
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -205,10 +242,10 @@ export default function AddUserPage() {
 						value={formData.gender}
 						onChange={handleChange}
 					>
-						<option value="">選択してください</option>
-						<option value="male">男性</option>
-						<option value="female">女性</option>
-						<option value="other">その他</option>
+						<option value="">{t('form.gender.placeholder')}</option>
+						<option value="male">{t('form.gender.options.male')}</option>
+						<option value="female">{t('form.gender.options.female')}</option>
+						<option value="other">{t('form.gender.options.other')}</option>
 					</select>
 				</div>
 
@@ -217,7 +254,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="membership_status"
 					>
-						会員状態
+						{t('form.membershipStatus.label')}
 					</label>
 					<select
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -226,10 +263,11 @@ export default function AddUserPage() {
 						value={formData.membership_status}
 						onChange={handleChange}
 					>
-						<option value="pending">保留中</option>
-						<option value="active">有効</option>
-						<option value="inactive">無効</option>
-						<option value="expired">期限切れ</option>
+						<option value="">{t('form.membershipStatus.placeholder')}</option>
+						<option value="pending">{t('form.membershipStatus.options.pending')}</option>
+						<option value="active">{t('form.membershipStatus.options.active')}</option>
+						<option value="inactive">{t('form.membershipStatus.options.inactive')}</option>
+						<option value="expired">{t('form.membershipStatus.options.expired')}</option>
 					</select>
 				</div>
 
@@ -238,7 +276,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="points"
 					>
-						ポイント
+						{t('form.points.label')}
 					</label>
 					<input
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -255,7 +293,7 @@ export default function AddUserPage() {
 						className="block text-gray-700 text-sm font-bold mb-2"
 						htmlFor="notes"
 					>
-						メモ
+						{t('form.notes.label')}
 					</label>
 					<textarea
 						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -269,11 +307,11 @@ export default function AddUserPage() {
 
 				<div className="flex items-center justify-between">
 					<button
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+						className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 						type="submit"
-						disabled={loading}
+						disabled={submitting}
 					>
-						{loading ? '処理中...' : '登録する'}
+						{submitting ? t('submit.loading') : t('submit.label')}
 					</button>
 				</div>
 			</form>

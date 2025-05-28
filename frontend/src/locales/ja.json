@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "title": "インターン課題 - ユーザー管理アプリ",
+    "description": "ユーザーデータのCRUD機能を持つWebアプリケーション"
+  },
+  "navigation": {
+    "home": "ホーム",
+    "userList": "ユーザー一覧",
+    "addUser": "ユーザー追加",
+    "importCsv": "CSVインポート",
+    "exportCsv": "CSVエクスポート"
+  },
+  "home": {
+    "title": "インターン課題 - ユーザー管理アプリ",
+    "description": "このアプリケーションは、ユーザーデータのCRUD機能を持つWebアプリケーションです。以下の機能を提供しています：",
+    "features": {
+      "userList": "ユーザー一覧表示（ページネーション機能付き）",
+      "userDetail": "ユーザー詳細表示",
+      "addUser": "ユーザー追加",
+      "editUser": "ユーザー編集",
+      "deleteUser": "ユーザー削除",
+      "importCsv": "CSVインポート",
+      "exportCsv": "CSVエクスポート"
+    },
+    "challenge": "このアプリケーションには、いくつかの不具合や改善点があります。それらを見つけて修正することが課題です。",
+    "cards": {
+      "userList": {
+        "title": "ユーザー一覧",
+        "description": "登録されているユーザーの一覧を表示します。"
+      },
+      "addUser": {
+        "title": "ユーザー追加",
+        "description": "新しいユーザーを追加します。"
+      },
+      "importCsv": {
+        "title": "CSVインポート",
+        "description": "CSVファイルからユーザーデータをインポートします。"
+      },
+      "exportCsv": {
+        "title": "CSVエクスポート",
+        "description": "ユーザーデータをCSVファイルにエクスポートします。"
+      }
+    }
+  },
+  "users": {
+    "list": {
+      "title": "ユーザー一覧",
+      "addUser": "新規ユーザー追加",
+      "loading": "読み込み中...",
+      "noUsers": "ユーザーが見つかりません",
+      "table": {
+        "id": "ID",
+        "name": "名前",
+        "email": "メールアドレス",
+        "phone": "電話番号",
+        "status": "会員状態",
+        "actions": "操作"
+      },
+      "actions": {
+        "detail": "詳細",
+        "edit": "編集",
+        "delete": "削除"
+      },
+      "errors": {
+        "fetch": "ユーザーデータの取得に失敗しました。"
+      },
+      "pagination": {
+        "label": "ページネーション",
+        "first": "最初のページ",
+        "previous": "前のページ",
+        "next": "次のページ",
+        "last": "最後のページ",
+        "info": "全{total}件中 {start}-{end}件を表示"
+      }
+    },
+    "add": {
+      "title": "ユーザー追加",
+      "backToList": "一覧に戻る",
+      "submit": {
+        "label": "追加する",
+        "loading": "追加中..."
+      },
+      "form": {
+        "name": {
+          "label": "名前",
+          "placeholder": "名前を入力してください",
+          "required": "名前は必須項目です"
+        },
+        "email": {
+          "label": "メールアドレス",
+          "placeholder": "example@example.com"
+        },
+        "phone": {
+          "label": "電話番号",
+          "placeholder": "090-1234-5678"
+        },
+        "address": {
+          "label": "住所",
+          "placeholder": "住所を入力してください"
+        },
+        "birthDate": {
+          "label": "生年月日",
+          "placeholder": "YYYY-MM-DD"
+        },
+        "gender": {
+          "label": "性別",
+          "placeholder": "性別を選択してください",
+          "options": {
+            "male": "男性",
+            "female": "女性",
+            "other": "その他"
+          }
+        },
+        "membershipStatus": {
+          "label": "会員状態",
+          "placeholder": "会員状態を選択してください",
+          "options": {
+            "active": "有効",
+            "inactive": "無効",
+            "pending": "保留中",
+            "expired": "期限切れ"
+          }
+        },
+        "notes": {
+          "label": "メモ",
+          "placeholder": "メモを入力してください"
+        },
+        "points": {
+          "label": "ポイント",
+          "placeholder": "0"
+        },
+        "required": "必須項目",
+        "cancel": "キャンセル"
+      },
+      "errors": {
+        "validation": "入力内容に誤りがあります。",
+        "general": "ユーザーの追加に失敗しました。"
+      },
+      "success": "ユーザーを追加しました。"
+    },
+    "import": {
+      "title": "CSVインポート",
+      "description": "CSVファイルからユーザーデータをインポートします。",
+      "note": "※ CSVファイルの1行目はヘッダー行として扱われます。",
+      "form": {
+        "file": "CSVファイル",
+        "filePlaceholder": "CSVファイルを選択してください",
+        "submit": "インポートする",
+        "loading": "インポート中..."
+      },
+      "errors": {
+        "noFile": "ファイルを選択してください。",
+        "notCsv": "CSVファイルを選択してください。",
+        "unknown": "不明なエラーが発生しました。"
+      },
+      "success": "インポートが完了しました。",
+      "format": {
+        "title": "CSVファイルの形式",
+        "description": "CSVエクスポート機能で出力される形式である必要があります。",
+        "table": {
+          "column": "列名",
+          "description": "説明",
+          "required": "必須"
+        },
+        "columns": {
+          "id": {
+            "name": "ID",
+            "description": "ユーザーID（更新時のみ）",
+            "required": "×"
+          },
+          "name": {
+            "name": "名前",
+            "description": "名前",
+            "required": "○"
+          },
+          "email": {
+            "name": "メールアドレス",
+            "description": "メールアドレス",
+            "required": "○"
+          },
+          "phone": {
+            "name": "電話番号",
+            "description": "電話番号",
+            "required": "×"
+          },
+          "address": {
+            "name": "住所",
+            "description": "住所",
+            "required": "×"
+          },
+          "birthdate": {
+            "name": "生年月日",
+            "description": "生年月日（YYYY-MM-DD形式）",
+            "required": "×"
+          },
+          "gender": {
+            "name": "性別",
+            "description": "性別（male/female/other）",
+            "required": "×"
+          },
+          "membership": {
+            "name": "会員状態",
+            "description": "会員状態（active/inactive/pending/expired）",
+            "required": "×"
+          },
+          "memo": {
+            "name": "メモ",
+            "description": "メモ",
+            "required": "×"
+          },
+          "profileImage": {
+            "name": "プロフィール画像",
+            "description": "プロフィール画像",
+            "required": "×"
+          },
+          "points": {
+            "name": "ポイント",
+            "description": "ポイント（数値）",
+            "required": "×"
+          }
+        }
+      },
+      "back": "一覧に戻る"
+    },
+    "export": {
+      "title": "CSVエクスポート",
+      "description": "ユーザーデータをCSVファイルにエクスポートします。",
+      "note": "※ 全てのユーザーデータがエクスポートされます。",
+      "button": {
+        "export": "エクスポートする",
+        "loading": "エクスポート中..."
+      },
+      "errors": {
+        "export": "エクスポートに失敗しました。"
+      },
+      "success": "エクスポートが完了しました。ダウンロードが開始されます。",
+      "info": {
+        "title": "CSVエクスポートについて",
+        "description": "ユーザーデータをCSVファイルとしてエクスポートします。エクスポートには時間がかかる場合があります。"
+      },
+      "back": "一覧に戻る"
+    }
+  },
+  "footer": {
+    "text": "© 2024 ユーザー管理システム"
+  }
+}

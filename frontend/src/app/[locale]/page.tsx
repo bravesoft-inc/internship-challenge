@@ -1,80 +1,93 @@
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
-export default function Home() {
+type Props = {
+	params: Promise<{ locale: string }>
+}
+
+export default async function Home({ params }: Props) {
+	const resolvedParams = await params
+	const locale = resolvedParams.locale
+
+	let messages;
+	try {
+		messages = (await import(`@/locales/${locale}.json`)).default;
+	} catch (error) {
+		notFound();
+	}
+
 	return (
 		<div className="space-y-6">
 			<h1 className="text-3xl font-bold">
-				インターン課題 - ユーザー管理アプリ
+				{messages.home.title}
 			</h1>
 
 			<div className="prose">
 				<p>
-					このアプリケーションは、ユーザーデータのCRUD機能を持つWebアプリケーションです。
-					以下の機能を提供しています：
+					{messages.home.description}
 				</p>
 
 				<ul>
-					<li>ユーザー一覧表示（ページネーション機能付き）</li>
-					<li>ユーザー詳細表示</li>
-					<li>ユーザー追加</li>
-					<li>ユーザー編集</li>
-					<li>ユーザー削除</li>
-					<li>CSVインポート</li>
-					<li>CSVエクスポート</li>
+					<li>{messages.home.features.userList}</li>
+					<li>{messages.home.features.userDetail}</li>
+					<li>{messages.home.features.addUser}</li>
+					<li>{messages.home.features.editUser}</li>
+					<li>{messages.home.features.deleteUser}</li>
+					<li>{messages.home.features.importCsv}</li>
+					<li>{messages.home.features.exportCsv}</li>
 				</ul>
 
 				<p>
-					このアプリケーションには、いくつかの不具合や改善点があります。
-					それらを見つけて修正することが課題です。
+					{messages.home.challenge}
 				</p>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				<Link
-					href="/users/list"
+					href={`/${locale}/users/list`}
 					className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100"
 				>
 					<h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-						ユーザー一覧
+						{messages.home.cards.userList.title}
 					</h5>
 					<p className="font-normal text-gray-700">
-						登録されているユーザーの一覧を表示します。
+						{messages.home.cards.userList.description}
 					</p>
 				</Link>
 
 				<Link
-					href="/users/add"
+					href={`/${locale}/users/add`}
 					className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100"
 				>
 					<h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-						ユーザー追加
+						{messages.home.cards.addUser.title}
 					</h5>
 					<p className="font-normal text-gray-700">
-						新しいユーザーを追加します。
+						{messages.home.cards.addUser.description}
 					</p>
 				</Link>
 
 				<Link
-					href="/users/import"
+					href={`/${locale}/users/import`}
 					className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100"
 				>
 					<h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-						CSVインポート
+						{messages.home.cards.importCsv.title}
 					</h5>
 					<p className="font-normal text-gray-700">
-						CSVファイルからユーザーデータをインポートします。
+						{messages.home.cards.importCsv.description}
 					</p>
 				</Link>
 
 				<Link
-					href="/users/export"
+					href={`/${locale}/users/export`}
 					className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100"
 				>
 					<h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-						CSVエクスポート
+						{messages.home.cards.exportCsv.title}
 					</h5>
 					<p className="font-normal text-gray-700">
-						ユーザーデータをCSVファイルにエクスポートします。
+						{messages.home.cards.exportCsv.description}
 					</p>
 				</Link>
 			</div>
