@@ -1,4 +1,7 @@
-FROM node:22-alpine3.20
+FROM node:22.11-alpine
+
+RUN npm install -g pnpm
+RUN pnpm config set store-dir /tmp/pnpm/store
 
 # Set working directory
 WORKDIR /app
