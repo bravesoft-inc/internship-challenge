@@ -1,0 +1,110 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# フロントエンドの開発ルール
+frontendフォルダ配下のコードに適用するルールを以下に記載する
+
+## 1. 開発方針
+・基本はReact Server Components (RSC) を優先。"use client" は必要最小限に。
+・SSR（サーバーサイドレンダリング）を活用し、初期表示・SEOを重視。
+・fetch はサーバーコンポーネントで呼ぶ。再利用可能な fetch ラッパーを作成する。
+・コード整形は Biome、パッケージ管理は pnpm を使用。
+・Tailwind CSS を用いたユーティリティファーストなスタイル設計。
+・ヘッドレスUIには shadcn/ui（Radix UI） を使用。
+・状態管理、テスト、i18n、アクセシビリティは後述の方針に従う。
+
+## 2. ディレクトリ構成（推奨構成）
+
+src/  
+├── app/   &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;    # App Router のページ構成  
+&thinsp; │   ├── layout.tsx  
+&thinsp; │   ├── page.tsx  
+&thinsp; │   └── [locale]/   &emsp;&emsp;&emsp; # i18nルーティング（例：/ja, /en）  
+├── components/   &emsp;&emsp; # 再利用可能な UI コンポーネント  
+&thinsp; │   ├── ui/                 # shadcn コンポーネント  
+&thinsp; │   └── ...  
+├── features/     &emsp;&emsp;&emsp;&emsp;  # 機能単位の分離  
+&thinsp; │   └── article/  
+&thinsp; │       ├── container/  
+&thinsp; │       └── presentational/  
+├── lib/         &emsp;&emsp;&emsp;&emsp;&emsp; # fetchラッパーやヘルパー  
+├── hooks/       &emsp;&emsp;&emsp;&emsp;&emsp; # カスタムHooks  
+├── locales/     &emsp;&emsp;&emsp;&emsp;&emsp; # i18n辞書  
+├── styles/      &emsp;&emsp;&emsp;&emsp;&emsp; # Tailwind, グローバルCSS  
+├── tests/       &emsp;&emsp;&emsp;&emsp;&emsp;  # テストコード  
+└── public/      &emsp;&emsp;&emsp;&emsp;&emsp; # 静的ファイル  
+
+
+## 3. コンポーネント設計
+・Container / Presentational パターン   
+&emsp;&emsp; ・Container：データ取得・状態管理を行い、Presentational にデータを渡す。  
+&emsp;&emsp; ・Presentational：propsを受け取って描画のみを行う。  
+・コンポーネントの責務は明確に分離する。  
+・UI部品は components/ui/ に集約し、アプリ固有の複合部品は components/ 配下に。  
+
+## 4. コーディング規約
+・命名規則：  
+    ・コンポーネント・クラス名：PascalCase  
+    ・変数・関数：camelCase  
+    ・ディレクトリ・ファイル名：kebab-case  
+・React Hooks：useXxx 命名。  
+・型安全を重視し、Props・State・APIレスポンスにはすべて型をつける。  
+・コメントは必要最小限。「なぜその実装か」を重視。  
+
+## 5. fetchラッパー設計
+```
+export async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${process.env.API_BASE_URL}${url}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  return res.json();
+}
+```
+
+## 6. 状態管理方針
+・グローバル状態が必要な場合は Zustand または Jotai を使用。  
+・ローカルな状態は useState, useReducer, useContext を適宜活用。  
+・状態を上位にリフトアップして共有するシンプルな構成を優先。  
+・必要な場面でのみライブラリを導入する。    
+
+
+## 7. i18n戦略
+・ライブラリは next-intl を推奨。  
+・ルート構成は [locale]/ を使用し、動的ルーティングで言語切替に対応。  
+・翻訳辞書は locales/ja.json のようにファイル分割して管理。  
+・翻訳キーは "page.home.title" のようなドット区切りを基本とする。  
+・UIには言語切替スイッチを用意し、localeをURLに反映。  
+
+## 8. アクセシビリティ指針
+・HTMLタグは意味に合ったセマンティクスを正しく使用（例：ボタンは \<button>）。  
+・キーボード操作（Tab/Enter）でのナビゲーション保証。  
+・aria-label など WAI-ARIA 属性の適切な利用。  
+・ESLintで eslint-plugin-jsx-a11y を使った自動チェックを行う。  
+・Radix UI の標準アクセシビリティ機能を活用する。  
+
+## 9. テスト方針
+| 種別 | ライブラリ | 補足 |
+|-----|-----|---|
+| ユニット| Jest / Vitest |	UIは React Testing Library 併用 |
+| 統合|	React Testing Library |	ユーザーフロー単位の検証 |
+| E2E | Playwright | CIでも実行しやすい | 
+
+・コンポーネントやHooks単位で .test.tsx, .test.ts を記述。  
+・クリティカルなユーザーフローは E2E テストでカバー。  
+・モックデータ・MSW（Mock Service Worker）活用を推奨。  
+
+## 10. PR / Git 運用
+・コミットは Conventional Commits 準拠（例：feat:, fix:）。  
+・PR単位でのコードレビューを基本とし、内容は目的・背景・影響範囲を記述。  
+・Biome整形 + lint にパスすることを CI で自動検証。  
