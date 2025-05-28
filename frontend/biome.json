@@ -1,0 +1,65 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"ignore": ["shared/store/slices/text-slice/textData.ts"]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab"
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"javascript": {
+		"globals": ["React"],
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "asNeeded"
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"all": true,
+			"style": {
+				"noDefaultExport": "off"
+			},
+			"correctness": {
+				"useImportExtensions": "off"
+			},
+			"suspicious": {
+				"noEvolvingTypes": "off",
+				"noReactSpecificProps": "off",
+				"noConsole": "off"
+			},
+			"nursery": {
+				"useImportRestrictions": {
+					"level": "off"
+				}
+			}
+		}
+	},
+	"overrides": [
+		{
+			"include": [
+				"next.config.js",
+				"layout.tsx",
+				"page.tsx",
+				"loading.tsx",
+				"error.tsx",
+				"not-found.tsx",
+				"*.tsx"
+			],
+			"ignore": ["tsconfig.json"],
+			"linter": {
+				"rules": {}
+			}
+		}
+	]
+}
